@@ -1,5 +1,7 @@
 # GINN: Graph-Informed Neural Networks
 
+by Stefano Berrone, Francesco Della Santa, Antonio Mastropietro, Sandra Pieraccini, Francesco Vaccarino.
+
 **ADVICE:** this repository will contains the code used to implement the Graph-Informed Neural Networks presented in the paper _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics, 2022, in press (accepted: 25th February, 2022).
 
 ## License
