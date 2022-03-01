@@ -32,7 +32,7 @@ If you find GINNs useful in your research, please cite:
 > YEAR = {2022},  
 > NUMBER = {5},  
 > ARTICLE-NUMBER = {786},  
-> URL = {https://www.mdpi.com/2227-7390/10/5/786},  
+> URL = {https://www.mdpi.com/2227-7390/10/5/786/htm},  
 > ISSN = {2227-7390},  
 > DOI = {10.3390/math10050786}   
 > }
