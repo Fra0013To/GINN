@@ -14,6 +14,10 @@ In the paper, the GINN models show very good regression abilities and interestin
 ## License
 _GINN_ is released under the MIT License (refer to the LICENSE file for details).
 
+## Requirements
+The requirements.txt file contains the required python modules for using the codes of this repository.
+**N.B.:** in the requirements we use tensorflow for CPUs but the codes work also with tensorflow for GPUs.
+
 ## Citation
 If you find GINNs useful in your research, please cite:
 #### BibTeX
