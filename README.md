@@ -7,7 +7,7 @@ _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathe
 
 The paper is **opens access** and you can find it [HERE](https://www.mdpi.com/2227-7390/10/5/786/htm).
 
-This work introduces a new spatial-based graph convolutional layer, called the Graph-Informed (GI) layer. The new architecture is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit connections in the neural network architecture, describing a new convolution operation for inputs associated with the vertices of the graph. 
+This work introduces a new spatial-based graph convolutional layer, called Graph-Informed (GI) layer. The new architecture is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit connections in the neural network architecture, describing a new convolution operation for inputs associated with the vertices of the graph. 
 In the paper, the GINN models show very good regression abilities and interesting potentialities on two maximum-flow test problems of stochastic flow networks and on a real-world application concerning the flux regression problem in underground networks of fractures.
 
 
