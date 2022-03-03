@@ -5,7 +5,7 @@ by Stefano Berrone, Francesco Della Santa, Antonio Mastropietro, Sandra Pieracci
 ![Example of the action of a GINN filter](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g001-550.jpg)
 
 In this repository, we publish the codes used to implement the Graph-Informed Neural Networks (GINNs) presented in the paper:
-_Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 786; https://doi.org/10.3390/math10050786 (registering DOI)
+_Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 786; https://doi.org/10.3390/math10050786
 
 The paper is **opens access** and you can find it [HERE](https://www.mdpi.com/2227-7390/10/5/786/htm).
 
