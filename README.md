@@ -27,7 +27,7 @@ The requirements.txt file contains the required python modules for using the cod
 If you find GINNs useful in your research, please cite:
 #### BibTeX
 > @Article{math10050786,  
-> AUTHOR = {Berrone, Stefano and Della Santa, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
+> AUTHOR = {Berrone, Stefano and {Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
 > TITLE = {Graph-Informed Neural Networks for Regressions on Graph-Structured Data},  
 > JOURNAL = {Mathematics},  
 > VOLUME = {10},  
