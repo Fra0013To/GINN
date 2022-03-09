@@ -64,10 +64,25 @@ The _GraphInformed_ class, in [nnlayers module](https://github.com/Fra0013To/GIN
 
 ### Run the Example
 To see a code example of GINN construction, training and prediction, see the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py) in this repository.  
-To run the example:
-1. Install the [required python modules](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements);
-1. Clone the repository or download the .py files;
-1. Run the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py).
+To run the example (bash terminal):
+1. Clone the repository:
+    ```bash 
+    git clone https://github.com/Fra0013To/GINN.git
+    ```
+2. Install the [required python modules](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements).
+    ```bash
+    pip install -r requirements.txt
+    ```
+    or 
+    ```bash
+    pip install numpy==1.22.1
+    pip install scipy==1.7.3
+    pip install tensorflow==2.7.0
+    ```
+3. Run the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py):
+    ```bash
+    python ginn_example.py
+    ```
 
 ## Citation
 If you find GINNs useful in your research, please cite:
