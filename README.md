@@ -16,12 +16,58 @@ In the paper, the GINN models show very good regression abilities and interestin
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
+## Table of Contents
+- [License](https://github.com/Fra0013To/GINN/edit/main/README.md#license)
+- [Requirements](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements)
+- [Getting Started](https://github.com/Fra0013To/GINN/edit/main/README.md#getting-started)
+  - [Inputs/Outputs Description](https://github.com/Fra0013To/GINN/edit/main/README.md#inputsoutputs-description)
+  - [Layer Initialization](https://github.com/Fra0013To/GINN/edit/main/README.md#layer-initialization)
+  - [Run the Example](https://github.com/Fra0013To/GINN/edit/main/README.md#run-the-example)
+- [Citation](https://github.com/Fra0013To/GINN/edit/main/README.md#citation)
+
 ## License
-_GINN_ is released under the MIT License (refer to the LICENSE file for details).
+_GINN_ is released under the MIT License (refer to the [LICENSE file](https://github.com/Fra0013To/GINN/blob/main/LICENSE) for details).
 
 ## Requirements
-The requirements.txt file contains the required python modules for using the codes of this repository.  
-**N.B.:** in the requirements we use tensorflow for CPUs but the codes work also with tensorflow for GPUs.
+- Numpy 1.22.1
+- Scipy 1.7.3
+- TensorFlow 2.7.0
+
+**N.B.:** in the requirements we use tensorflow for CPUs but the codes work also with tensorflow for GPUs. The [requirements.txt file](https://github.com/Fra0013To/GINN/blob/main/requirements.txt) contains the required python modules (list above) and the corresponding dependencies.
+
+## Getting Started
+The GI layer can be used and added to a Keras model as any other Keras layer. In the following, we describe the inputs and outputs of a GI layer and we list the arguments for a GI layer initialization. Similar information is contained in the class code as comments/helps.
+
+Then, we illustrate how to run an example of GINN construction, training and prediction.
+
+### Inputs/Outputs Description
+Given the adjacency matrix _A_ of shape (_N_, _N_) of a graph and the number of filters _F_ (i.e., the desired number of output features) the GI layer w.r.t. _A_ and _F_ returns an array of shape (?, _N_, _F_), for each batch of inputs of shape (?, _N_, _K_), where:
+- _K_ is the number of input features per graph node;
+- The symbol "?" denotes the batch size.
+
+If _F = 1_ or a _pooling option_ is selected, the output tensor has shape (?, _N_). At the moment, a general pooling operation that returns _F'_ output features, _1 < F' < F_, is not implemented yet.
+
+If a list of _m_ _highlighted nodes_ is given, the array returned by the layer has shape (?, _m_, _F_) or (?, _m_), where the output features are the ones related to the _m_ selected nodes of the graph (i.e., performs the mask operation illustrated in the paper).
+
+### Layer Initialization
+The _GraphInformed_ class, in [nnlayers module](https://github.com/Fra0013To/GINN/blob/main/nnlayers.py) of this repository, is defined as a subclass of [_tensorflow.keras.layers.Dense_](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense). Then, we list and describe only the new input arguments for the initialization. All the other arguments (e.g., _activation_, _kernel_initializer_, etc.) are inherited by the _Dense_ class.
+
+- **adj_mat**: a dictionary describing the adjacency matrix. The dictionary must have the following keys and values:
+  - _'keys'_: list of tuples (row,column) corresponding to nonzero elements of the adjacency matrix;
+  - _'values'_: list of the numerical values associated to the tuples in _'keys'_;
+  - _'shape'_: shape of the adjacency matrix.
+  
+  If you have the adjacency matrix saved as a _scipy.sparse_ matrix, you can use the _spars2dict_ function in the [utils module](https://github.com/Fra0013To/GINN/blob/main/utils.py) of this repository to convert it into a proper dictionary for the GraphInformed class. On the other hand, the function _dict2sparse_ returns a _scipy.sparse_ matrix from this kind of dictionaries;
+- **num_filters**: the integer number _F_ of output features per node of the layer. Default is 1;
+- **pool**: _None_ or a _string_ denoting a tf-reducing function (e.g.: ['reduce_mean'](https://www.tensorflow.org/api_docs/python/tf/math/reduce_mean), ['reduce_max'](https://www.tensorflow.org/api_docs/python/tf/math/reduce_max), etc.). Default is _None_;
+- **highlighted_nodes**: _None_ or list of _m <= N_ indexes of the graph nodes on which the layer is focused. Default is _None_.
+
+### Run the Example
+To see a code example of GINN construction, training and prediction, see the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py) in this repository.  
+To run the example:
+1. Install the [required python modules](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements);
+1. Clone the repository or download the .py files;
+1. Run the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py).
 
 ## Citation
 If you find GINNs useful in your research, please cite:
