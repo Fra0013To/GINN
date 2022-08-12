@@ -17,13 +17,13 @@ In the paper, the GINN models show very good regression abilities and interestin
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
 ## Table of Contents
-- [License](https://github.com/Fra0013To/GINN/edit/main/README.md#license)
-- [Requirements](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements)
-- [Getting Started](https://github.com/Fra0013To/GINN/edit/main/README.md#getting-started)
-  - [Inputs/Outputs Description](https://github.com/Fra0013To/GINN/edit/main/README.md#inputsoutputs-description)
-  - [Layer Initialization](https://github.com/Fra0013To/GINN/edit/main/README.md#layer-initialization)
-  - [Run the Example](https://github.com/Fra0013To/GINN/edit/main/README.md#run-the-example)
-- [Citation](https://github.com/Fra0013To/GINN/edit/main/README.md#citation)
+- [License](https://github.com/Fra0013To/GINN/blob/main/README.md#license)
+- [Requirements](https://github.com/Fra0013To/GINN/blob/main/README.md#requirements)
+- [Getting Started](https://github.com/Fra0013To/GINN/blob/main/README.md#getting-started)
+  - [Inputs/Outputs Description](https://github.com/Fra0013To/GINN/blob/main/README.md#inputsoutputs-description)
+  - [Layer Initialization](https://github.com/Fra0013To/GINN/blob/main/README.md#layer-initialization)
+  - [Run the Example](https://github.com/Fra0013To/GINN/edit/blob/README.md#run-the-example)
+- [Citation](https://github.com/Fra0013To/GINN/edit/blob/README.md#citation)
 
 ## License
 _GINN_ is released under the MIT License (refer to the [LICENSE file](https://github.com/Fra0013To/GINN/blob/main/LICENSE) for details).
