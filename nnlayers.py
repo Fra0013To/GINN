@@ -102,7 +102,7 @@ class GraphInformed(tf.keras.layers.Dense):
         if len(input_shape) >= 3:
             self.num_features = input_shape[2]
 
-        # FOR PRACTICAL USANGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N, K, F) TO SHAPE (NK, 1, F)
+        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N, K, F) TO SHAPE (NK, 1, F)
         self.kernel = self.add_weight(name="kernel", shape=[int(self.units * self.num_features), 1, self.num_filters],
                                       initializer=self.kernel_initializer)
 
@@ -128,7 +128,7 @@ class GraphInformed(tf.keras.layers.Dense):
                                                     )
 
         # COMPUTE THE W~ TENSOR MULTIPLYING ELEMENT-WISE:
-        # 1. A TF-TENSOR OF SHAPE (NH, N, F), OBTAINED CONCATENATING F TIMES THE TENSOR A~ ALONG THE 3rd AXIS
+        # 1. A TF-TENSOR OF SHAPE (NK, N, F), OBTAINED CONCATENATING F TIMES THE TENSOR A~ ALONG THE 3rd AXIS
         # 2. THE self.kernel TENSOR OF SHAPE (NK, 1, F)
         Wtilde = tf.tile(adj_mat_hat_tiled_expanded, [1, 1, self.num_filters]) * self.kernel
 
