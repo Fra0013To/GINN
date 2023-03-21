@@ -12,18 +12,18 @@ The paper is **opens access** and you can find it [HERE](https://www.mdpi.com/22
 This work introduces a new spatial-based graph convolutional layer, called Graph-Informed (GI) layer. The new architecture is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit connections in the neural network architecture, describing a new convolution operation for inputs associated with the vertices of the graph. 
 In the paper, the GINN models show very good regression abilities and interesting potentialities on two maximum-flow test problems of stochastic flow networks and on a real-world application concerning the flux regression problem in underground networks of fractures.
 
-**SPARSE AND DENSE OPERATIONS:** unfortunately the the tensorflow version used at the moment of the code development (2.7.0) does not allow all the sparse tensor operations we need (in particular, a sparse version of the tensordot operation). Then, the code of the GI layer class works with dense tensors. As soon as the tools for sparse tensors will be available in tensorflow, we will update the code.
+**SPARSE AND DENSE OPERATIONS:** unfortunately the tensorflow version used at the moment of the code development (2.7.0) does not allow all the sparse tensor operations we need (in particular, a sparse version of the tensordot operation). Then, the code of the GI layer class works with dense tensors. As soon as the tools for sparse tensors will be available in tensorflow, we will update the code.
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
 ## Table of Contents
-- [License](https://github.com/Fra0013To/GINN/edit/main/README.md#license)
-- [Requirements](https://github.com/Fra0013To/GINN/edit/main/README.md#requirements)
-- [Getting Started](https://github.com/Fra0013To/GINN/edit/main/README.md#getting-started)
-  - [Inputs/Outputs Description](https://github.com/Fra0013To/GINN/edit/main/README.md#inputsoutputs-description)
-  - [Layer Initialization](https://github.com/Fra0013To/GINN/edit/main/README.md#layer-initialization)
-  - [Run the Example](https://github.com/Fra0013To/GINN/edit/main/README.md#run-the-example)
-- [Citation](https://github.com/Fra0013To/GINN/edit/main/README.md#citation)
+- [License](https://github.com/Fra0013To/GINN/blob/main/README.md#license)
+- [Requirements](https://github.com/Fra0013To/GINN/blob/main/README.md#requirements)
+- [Getting Started](https://github.com/Fra0013To/GINN/blob/main/README.md#getting-started)
+  - [Inputs/Outputs Description](https://github.com/Fra0013To/GINN/blob/main/README.md#inputsoutputs-description)
+  - [Layer Initialization](https://github.com/Fra0013To/GINN/blob/main/README.md#layer-initialization)
+  - [Run the Example](https://github.com/Fra0013To/GINN/edit/blob/README.md#run-the-example)
+- [Citation](https://github.com/Fra0013To/GINN/edit/blob/README.md#citation)
 
 ## License
 _GINN_ is released under the MIT License (refer to the [LICENSE file](https://github.com/Fra0013To/GINN/blob/main/LICENSE) for details).
