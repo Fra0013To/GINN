@@ -4,15 +4,30 @@ by [Stefano Berrone](https://www.researchgate.net/profile/Stefano-Berrone), [Fra
 
 ![Example of the action of a GINN filter](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g001-550.jpg)
 
-In this repository, we publish the codes used to implement the Graph-Informed Neural Networks (GINNs) presented in the paper:
-_Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 786; https://doi.org/10.3390/math10050786
+In this repository, we publish the codes necessary to implement the Graph-Informed Neural Networks (GINNs), presented 
+for the first time in the paper: _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 
+2022, 10(5), 786; https://doi.org/10.3390/math10050786
 
-The paper is **opens access** and you can find it [HERE](https://www.mdpi.com/2227-7390/10/5/786/htm).
+The papers related to GINNs are listed in the follwoing
+1. _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 
+786; https://doi.org/10.3390/math10050786 **[OPEN ACCESS]**;
+1. _Graph-Informed Neural Networks for Sparse Grid-Based Discontinuity Detectors_, arXiv preprint, https://arxiv.org/abs/2401.13652
+1. _Sparse Implementation of Versatile Graph-Informed Layers_, arXiv preprint, http://arxiv.org/abs/2403.13781;
 
-This work introduces a new spatial-based graph convolutional layer, called Graph-Informed (GI) layer. The new architecture is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit connections in the neural network architecture, describing a new convolution operation for inputs associated with the vertices of the graph. 
-In the paper, the GINN models show very good regression abilities and interesting potentialities on two maximum-flow test problems of stochastic flow networks and on a real-world application concerning the flux regression problem in underground networks of fractures.
+Graph-Informed (GI) layers are defined through a new spatial-based graph convolutional operation. The new architecture 
+is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph 
+neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the 
+vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit 
+connections in the neural network architecture, describing a new convolution operation for inputs associated with the 
+vertices of the graph. 
+In the original paper, the GINN models show very good regression abilities and interesting potentialities on two 
+maximum-flow test problems of stochastic flow networks and on a real-world application concerning the flux regression 
+problem in underground networks of fractures. In more recent works, GINNs have been applied also to classification tasks 
+(e.g., detection of points near to discontinuity interfaces of functions, see https://arxiv.org/abs/2401.13652).
 
-**SPARSE AND DENSE OPERATIONS:** unfortunately the tensorflow version used at the moment of the code development (2.7.0) does not allow all the sparse tensor operations we need (in particular, a sparse version of the tensordot operation). Then, the code of the GI layer class works with dense tensors. As soon as the tools for sparse tensors will be available in tensorflow, we will update the code. _**Latest News (February 2024):** Sparse implementation is ready and it will be uploaded soon!_
+**SPARSE AND DENSE OPERATIONS:** sparse implementation of GI layers has been introduced after http://arxiv.org/abs/2403.13781 (March 2024) and is 
+currently available! The dense implementation of the original GI layers' paper is still present in the repository, but
+it is deprecated.
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
@@ -29,38 +44,72 @@ In the paper, the GINN models show very good regression abilities and interestin
 _GINN_ is released under the MIT License (refer to the [LICENSE file](https://github.com/Fra0013To/GINN/blob/main/LICENSE) for details).
 
 ## Requirements
-- Numpy 1.22.1
-- Scipy 1.7.3
-- TensorFlow 2.7.0
+- Numpy 1.25.2
+- Scipy 1.12.0
+- TensorFlow 2.15.0.post1
 
-**N.B.:** in the requirements we use tensorflow for CPUs but the codes work also with tensorflow for GPUs. The [requirements.txt file](https://github.com/Fra0013To/GINN/blob/main/requirements.txt) contains the required python modules (list above) and the corresponding dependencies.
+**N.B.:** The [requirements.txt file](https://github.com/Fra0013To/GINN/blob/main/requirements.txt) contains the required python modules (list above).
 
 ## Getting Started
-The GI layer can be used and added to a Keras model as any other Keras layer. In the following, we describe the inputs and outputs of a GI layer and we list the arguments for a GI layer initialization. Similar information is contained in the class code as comments/helps.
+The GI layer can be used in Keras model as any other Keras layer. 
 
-Then, we illustrate how to run an example of GINN construction, training and prediction.
+In the following, we describe the inputs and outputs 
+of a GI layer and we list the arguments for a GI layer initialization. Similar information is contained in the class 
+code as comments/helps. Then, we illustrate how to run an example of GINN construction, training and prediction.
+
+For a full explanation of the current version of GI layers, see http://arxiv.org/abs/2403.13781. 
 
 ### Inputs/Outputs Description
-Given the adjacency matrix _A_ of shape (_N_, _N_) of a graph and the number of filters _F_ (i.e., the desired number of output features) the GI layer w.r.t. _A_ and _F_ returns an array of shape (?, _N_, _F_), for each batch of inputs of shape (?, _N_, _K_), where:
+Given the adjacency matrix _A_ of shape (_N_, _N_) of a graph and the number of filters _F_ (i.e., the desired number 
+of output features) the GI layer w.r.t. _A_ and _F_ returns an array of shape (?, _N_, _F_), for each batch of inputs of shape (?, _N_, _K_), where:
 - _K_ is the number of input features per graph node;
 - The symbol "?" denotes the batch size.
 
-If _F = 1_ or a _pooling option_ is selected, the output tensor has shape (?, _N_). At the moment, a general pooling operation that returns _F'_ output features, _1 < F' < F_, is not implemented yet.
+If _F = 1_ or a _pooling option_ is selected, the output tensor has shape (?, _N_). At the moment, a general pooling 
+operation that returns _F'_ output features, _1 < F' < F_, is not implemented yet.
 
-If a list of _m_ _highlighted nodes_ is given, the array returned by the layer has shape (?, _m_, _F_) or (?, _m_), where the output features are the ones related to the _m_ selected nodes of the graph (i.e., performs the mask operation illustrated in the paper).
+The layer can be defined also with respect to a submatrix _A'_ of shape (_n1_, _n2_) of the adjacency matrix, 
+representing the subgraph identified by two sets _V1_ and _V2_ of _n1<=N_, and _n2<=N_ graph nodes, respectively. 
+In this case, the layer is characterized by the connections between the chosen subsets of nodes and the indices of these
+nodes must be given during the initialization of the layer.
 
 ### Layer Initialization
-The _GraphInformed_ class, in [nnlayers module](https://github.com/Fra0013To/GINN/blob/main/nnlayers.py) of this repository, is defined as a subclass of [_tensorflow.keras.layers.Dense_](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense). Then, we list and describe only the new input arguments for the initialization. All the other arguments (e.g., _activation_, _kernel_initializer_, etc.) are inherited by the _Dense_ class.
+The _GraphInformed_ class, in [grphinformed.layers module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/layers.py) 
+of this repository, is defined as a subclass of [_tensorflow.keras.layers.Dense_](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense) (more precisily, it is a subclass
+of the deprecated non-sparse implementation of original GI layers, that is a subclass of Dense layers). Then, we list 
+and describe only the new input arguments for the initialization. All the other arguments 
+(e.g., _activation_, _kernel_initializer_, etc.) are inherited by the _Dense_ class.
 
-- **adj_mat**: a dictionary describing the adjacency matrix. The dictionary must have the following keys and values:
-  - _'keys'_: list of tuples (row,column) corresponding to nonzero elements of the adjacency matrix;
-  - _'values'_: list of the numerical values associated to the tuples in _'keys'_;
-  - _'shape'_: shape of the adjacency matrix.
-  
-  If you have the adjacency matrix saved as a _scipy.sparse_ matrix, you can use the _spars2dict_ function in the [utils module](https://github.com/Fra0013To/GINN/blob/main/utils.py) of this repository to convert it into a proper dictionary for the GraphInformed class. On the other hand, the function _dict2sparse_ returns a _scipy.sparse_ matrix from this kind of dictionaries;
-- **num_filters**: the integer number _F_ of output features per node of the layer. Default is 1;
-- **pool**: _None_ or a _string_ denoting a tf-reducing function (e.g.: ['reduce_mean'](https://www.tensorflow.org/api_docs/python/tf/math/reduce_mean), ['reduce_max'](https://www.tensorflow.org/api_docs/python/tf/math/reduce_max), etc.). Default is _None_;
-- **highlighted_nodes**: _None_ or list of _m <= N_ indexes of the graph nodes on which the layer is focused. Default is _None_.
+#### Initialization Arguments:
+the arguments are listed in the same order of the code in the repository.
+- **adj_mat**: the matrix _A'_. It must be a _scipy.sparse.dok_matrix_ or _scipy.sparse.dok_array_, or a dictionary 
+describing the adjacency matrix using the following keys:
+  - _keys_: list of tuples _(i,j)_ denoting the non-zero elements of the matrix _A'_;
+  - _values_: list of non-zero values of _A'_, corresponding to _keys_; 
+  - _rowkeys_custom_: list of indices _i(1),... ,_i(n1)_ denoting the nodes in _V1_. If _None_, we assume that they are 
+  0,... , (n1 - 1);
+  - _colkeys_custom_: list of indices _j(1),... ,_j(n2)_ denoting the nodes in _V2_. If _None_, we assume that they are 
+  0,... , (n2 - 1);
+  - _keys_custom_: list of tuples _(i(k),j(h))_ that "translate" the tuples in _keys_ with respect to the indices stored
+  in _rowkeys_custom_ and _colkeys_custom_. If _None_, we assume that this list is equal to the one stored in _keys_. 
+
+  Such a kind of dictionary can be easily obtained from a sparse matrix using the _sparse2dict_ function defined in 
+the [grphinformed.utils module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/utils.py) .
+- **rowkeys**: list, default _None_. List containing the indices of the nodes in _V1_. If _None_, we assume that the 
+indices are 0,... , (n1 - 1). Any list is automatically sorted in ascending order. This argument is ignored if the 
+_adj_mat_ argument is a dictionary.
+- **colkeys**: list, default _None_. List containing the indices of the nodes in _V2_. If _None_, we assume that the 
+indices are 0,... , (n2 - 1). Any list is automatically sorted in ascending order. This argument is ignored if the 
+_adj_mat_ argument is a dictionary.
+- **selfloop_value**: float, default 1.0. Rescaling factor of the self-loop connections added by the graph-convolution 
+operation. Modify this value only if _A_ is the adjacency matrix of a weighted graph and you want specific weights for 
+self-loops added by the graph-convolution.
+- **num_filters**: integer, default 1. Integer value describing the number _F_ of filters (i.e., output features per 
+node) of the layer. The value _K_ of input features per node is inferred directly from the inputs.
+- **activation**, **use_bias**, **kernel_initializer**, **bias_initializer**, **kernel_regularizer**, 
+**bias_regularizer**, **activity_regularizer**, **kernel_constraint**, **bias_constraint**: see the _tensorflow.keras.layers.Dense_ class;
+- **pool**: string, default _None_. String describing a "reducing function" of tensorflow (e.g., 'reduce_mean', 
+'reduce_max', etc.);
 
 ### Run the Example
 To see a code example of GINN construction, training and prediction, see the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py) in this repository.  
@@ -75,9 +124,9 @@ To run the example (bash terminal):
     ```
     or 
     ```bash
-    pip install numpy==1.22.1
-    pip install scipy==1.7.3
-    pip install tensorflow==2.7.0
+    pip install numpy==1.25.2
+    pip install scipy==1.12.0
+    pip install tensorflow==2.15.0.post1
     ```
 3. Run the script [ginn_example.py](https://github.com/Fra0013To/GINN/blob/main/ginn_example.py):
     ```bash
@@ -85,7 +134,7 @@ To run the example (bash terminal):
     ```
 
 ## Citation
-If you find GINNs useful in your research, please cite:
+If you find GINNs useful in your research, please cite the following papers (BibTeX and RIS versions):
 #### BibTeX
 > @Article{math10050786,  
 > AUTHOR = {Berrone, Stefano and {Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
@@ -98,6 +147,17 @@ If you find GINNs useful in your research, please cite:
 > ISSN = {2227-7390},  
 > DOI = {10.3390/math10050786}   
 > }
+>   
+> @misc{dellasanta2024sparse,  
+>       title={Sparse Implementation of Versatile Graph-Informed Layers},   
+>       author={{Della Santa}, Francesco},  
+>       year={2024},  
+>       eprint={2403.13781},  
+>       archivePrefix={arXiv},  
+>       primaryClass={cs.LG},  
+>       doi={}  
+> }
+
 #### RIS
 > TY  - EJOU  
 > AU  - Berrone, Stefano  
@@ -114,7 +174,17 @@ If you find GINNs useful in your research, please cite:
 > KW  - graph neural networks  
 > KW  - deep learning  
 > KW  - regression on graphs  
-> DO  - 10.3390/math10050786  
+> DO  - 10.3390/math10050786 
 
-## Update
-- 2022.02.28: Repository creation.
+> TY  - EJOU  
+> AU  - Della Santa, Francesco  
+> TI  - Sparse Implementation of Versatile Graph-Informed Layers   
+> T2  - arXiv  
+> PY  - 2024   
+> KW  - graph neural networks  
+> KW  - deep learning  
+> DO  - 
+
+## Updates and Versions
+- v 2.0 (2024.03.22): Sparse implementation and versatile general form of GI layers (see http://arxiv.org/abs/2403.13781).
+- v 1.0 (2022.02.28): Repository creation.
