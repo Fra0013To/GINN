@@ -74,7 +74,7 @@ In this case, the layer is characterized by the connections between the chosen s
 nodes must be given during the initialization of the layer.
 
 ### Layer Initialization
-The _GraphInformed_ class, in [grphinformed.layers module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/layers.py) 
+The _GraphInformed_ class, in [graphinformed.layers module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/layers.py) 
 of this repository, is defined as a subclass of [_tensorflow.keras.layers.Dense_](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense) (more precisily, it is a subclass
 of the deprecated non-sparse implementation of original GI layers, that is a subclass of Dense layers). Then, we list 
 and describe only the new input arguments for the initialization. All the other arguments 
@@ -94,7 +94,7 @@ describing the adjacency matrix using the following keys:
   in _rowkeys_custom_ and _colkeys_custom_. If _None_, we assume that this list is equal to the one stored in _keys_. 
 
   Such a kind of dictionary can be easily obtained from a sparse matrix using the _sparse2dict_ function defined in 
-the [grphinformed.utils module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/utils.py) .
+the [graphinformed.utils module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/utils.py) .
 - **rowkeys**: list, default _None_. List containing the indices of the nodes in _V1_. If _None_, we assume that the 
 indices are 0,... , (n1 - 1). Any list is automatically sorted in ascending order. This argument is ignored if the 
 _adj_mat_ argument is a dictionary.
