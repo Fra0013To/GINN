@@ -92,6 +92,7 @@ function $\mathcal{L}^{GI}:\mathbb{R}^n\rightarrow\mathbb{R}^n$ such that
     \,,
 \end{equation}
 for each vector of input features $\boldsymbol{x}\in\mathbb{R}^n$, where:
+
 - $\boldsymbol{w}\in\mathbb{R}^n$ is the vector containing the $n$ layer weights, associated to the $N$ graph nodes 
 and $\widehat{W}$ denotes the product $\mathrm{diag}(\boldsymbol{w}) (A + \mathbb{I}_n)$;
 - $\boldsymbol{\sigma}:\mathbb{R}^n\rightarrow\mathbb{R}^n$ is the element-wise application of the activation function 
@@ -124,6 +125,7 @@ $\mathcal{L}^{GI}:\mathbb{R}^{n\times K}\rightarrow\mathbb{R}^{n\times F}$ defin
    	\mathcal{L}^{GI}(X) = \boldsymbol{\sigma}\left( \widetilde{\boldsymbol{\rm W}}^T \mathrm{vertcat}(X) + B \right)\,,
 \end{equation}
 where:
+
 - $X\in\mathbb{R}^{n\times K}$ is the input matrix (i.e., the output of the previous layer) 
 and $\mathrm{vertcat}(X)$ denotes the vector in $\mathbb{R}^{nK}$ obtained concatenating the columns of $X$;
 - the tensor $\widetilde{\boldsymbol{\rm W}}\in \mathbb{R}^{nK\times F\times n}$ is defined as the concatenation along the 
@@ -154,7 +156,7 @@ $\mathbb{R}^{nK\times 1\times n}$ (see Figure \ref{fig:tensor_What_concatenation
 
 ![Tensor $\widetilde{\boldsymbol{\rm W}}$ obtained concatenating along the second dimension the matrices 
 $\widetilde{W}^{(1)},\ldots , \widetilde{W}^{(F)} \in\mathbb{R}^{nK \times n}$. Before the concatenation, the matrices 
-are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](paper_joss_2024/tensorW.png)[]{label="fig:tensor_What_concatenation_3d"}
+are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](tensorW.png)[]{label="fig:tensor_What_concatenation_3d"}
 
 
 Additionally, pooling and mask operations can be added to GI layers (see [@GINN] for more details). 
