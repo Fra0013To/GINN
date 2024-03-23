@@ -132,19 +132,19 @@ such that
 \begin{equation}\label{eq:Wtilde_filter_concat}
   	\widetilde{W}^{(l)} := 
    	\begin{bmatrix}
-   		\widehat{W}\pe{1,l}\\
+   		\widehat{W}^{(1,l)}\\
   		\vdots\\
-   		\widehat{W}\pe{K, l}
+   		\widehat{W}^{(K, l)}
       	\end{bmatrix} 
       	=
       	\begin{bmatrix}
-   		\mathrm{diag}(\boldsymbol{w}\pe{1, l})(A+\mathbb{I}_n)\\
+   		\mathrm{diag}(\boldsymbol{w}^{(1, l)})(A+\mathbb{I}_n)\\
    		\vdots\\
-   		\mathrm{diag}(\boldsymbol{w}\pe{K, l}(A+\mathbb{I}_n)
+   		\mathrm{diag}(\boldsymbol{w}^{(K, l)}(A+\mathbb{I}_n)
    	\end{bmatrix}
  	\in\mathbb{R}^{nK\times n}\,,
 \end{equation}
-for each $l=1,\ldots ,F$, and where $\boldsymbol{w}\pe{k,l}\in\mathbb{R}^n$ is the weight vector characterizing the 
+for each $l=1,\ldots ,F$, and where $\boldsymbol{w}^{(k,l)}\in\mathbb{R}^n$ is the weight vector characterizing the 
 contribute of the $k$-th input feature to the computation of the $l$-th output feature of the nodes, for each 
 $k=1,\ldots ,K$, and $l=1,\ldots ,F$.
 Before the concatenation, the matrices $\widetilde{W}^{(1)},\ldots ,\widetilde{W}^{(F)}$ are reshaped as tensors in 
