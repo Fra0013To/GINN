@@ -6,7 +6,7 @@ tags:
   - Deep Learning
   - Graph Neural Networks
 authors:
-  - name: Francesco Della Santa
+  - name: Francesco {Della Santa}
     orcid: 0000-0002-2202-9600
     equal-contrib: true
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
@@ -156,7 +156,7 @@ $\mathbb{R}^{nK\times 1\times n}$ (see Figure \ref{fig:tensor_What_concatenation
 
 ![Tensor $\widetilde{\boldsymbol{\rm W}}$ obtained concatenating along the second dimension the matrices 
 $\widetilde{W}^{(1)},\ldots , \widetilde{W}^{(F)} \in\mathbb{R}^{nK \times n}$. Before the concatenation, the matrices 
-are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](tensorW.png)[]{label="fig:tensor_What_concatenation_3d"}
+are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](tensorW.png){ width=50% }[]{label="fig:tensor_What_concatenation_3d"}
 
 
 Additionally, pooling and mask operations can be added to GI layers (see [@GINN] for more details). 
