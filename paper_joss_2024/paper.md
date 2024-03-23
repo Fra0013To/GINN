@@ -148,17 +148,17 @@ for each $l=1,\ldots ,F$, and where $\boldsymbol{w}\pe{k,l}\in\mathbb{R}^n$ is t
 contribute of the $k$-th input feature to the computation of the $l$-th output feature of the nodes, for each 
 $k=1,\ldots ,K$, and $l=1,\ldots ,F$.
 Before the concatenation, the matrices $\widetilde{W}^{(1)},\ldots ,\widetilde{W}^{(F)}$ are reshaped as tensors in 
-$\mathbb{R}^{nK\times 1\times n}$ (see \Cref{fig:tensor_What_concatenation_3d});
+$\mathbb{R}^{nK\times 1\times n}$ (see Figure \ref{fig:tensor_What_concatenation_3d});
 - the operation $\widetilde{\boldsymbol{\rm W}}^T \mathrm{vertcat}(X)$ is a tensor-vector product;
 - $B\in\mathbb{R}^{n\times F}$ is the matrix of the biases, i.e., each column $\boldsymbol{b}_{\cdot l}$ is the bias vector corresponding to the $l$-th output feature of the nodes.
 
 ![Tensor $\widetilde{\boldsymbol{\rm W}}$ obtained concatenating along the second dimension the matrices 
 $\widetilde{W}^{(1)},\ldots , \widetilde{W}^{(F)} \in\mathbb{R}^{nK \times n}$. Before the concatenation, the matrices 
-are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](paper_joss_2024/tensorW.png)
+are reshaped as tensors in $\mathbb{R}^{nK\times 1\times n}$.](paper_joss_2024/tensorW.png)[]{label="fig:tensor_What_concatenation_3d"}
 
 
-Additionally, pooling and mask operations can be added to GI layers (see \cite{GINN} for more details). 
-A NN made of GI layers is called \emph{Graph-Informed Neural Network} (GINN) \cite{GINN}.
+Additionally, pooling and mask operations can be added to GI layers (see [@GINN] for more details). 
+A NN made of GI layers is called _Graph-Informed Neural Network_ (GINN) [@GINN].
 
 
 We point the attention of the reader to the fact that the tensor $\widetilde{\boldsymbol{\rm W}}$ typically is sparse. 
