@@ -116,8 +116,8 @@ definition of a GI layer is the following.
 
 
 **Definition** _(Graph Informed Layer - General form [@GINN])_ []{label="def:GIlayer_general"}
-Let $A\in\mathbb{R}^{n\times n}$ be the adjacency matrix of a given graph. Then, a _GI layer_ with $K\in\N$ input 
-features and $F\in\N$ output features is a NN layer with $n F$ units connected to a layer with outputs in 
+Let $A\in\mathbb{R}^{n\times n}$ be the adjacency matrix of a given graph. Then, a _GI layer_ with $K\in\mathbb{N}$ input 
+features and $F\in\mathbb{N}$ output features is a NN layer with $n F$ units connected to a layer with outputs in 
 $\mathbb{R}^{n\times K}$ and having a characterizing function 
 $\mathcal{L}^{GI}:\mathbb{R}^{n\times K}\rightarrow\mathbb{R}^{n\times F}$ defined by
 \begin{equation}\label{eq:GIlayer_general}
