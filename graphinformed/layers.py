@@ -154,7 +154,7 @@ class GraphInformed(DenseNonversatileGraphInformed):
     """
     Graph-Informed layer class (obtained as subclass of DenseNonversatileGraphInformed),
     sparse implementation.
-    It implements the Versatile General Graph-Informed (GI) layer, introduced in XXXXX by Della Santa F. as a further
+    It implements the Versatile General Graph-Informed (GI) layer, introduced in https://doi.org/10.48550/arXiv.2403.13781 by Della Santa F. as a further
     generalization of General GI layers defined in https://doi.org/10.3390/math10050786 by Berrone S., Della Santa F.,
     Mastropietro A., Pieraccini S., Vaccarino F.
     Given the sub-matrix N1-by-N2 of an adjacency matrix of a graph and the number of filters F (i.e., output features),
