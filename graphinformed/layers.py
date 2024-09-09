@@ -160,7 +160,7 @@ class GraphInformed(DenseNonversatileGraphInformed):
     Given the sub-matrix N1-by-N2 of an adjacency matrix of a graph and the number of filters F (i.e., output features),
     the layer returns batch-array of shape (?, N2, F), for each batch of inputs of shape (?, N1, K), where K is the
     number of input features per graph node. The symbol "?" denotes the batch size.
-    If num_filters=1 or option pool is not None, the output tensor has shape (?, N). A general pooling operation that
+    If num_filters=1 or option pool is not None, the output tensor has shape (?, N2). A general pooling operation that
     returns F' output features, 1 < F' < F, is not implemented yet.
     This layer can receive any batch-of-inputs tensor of shape (?, N1, K).
     """
@@ -261,13 +261,13 @@ class GraphInformed(DenseNonversatileGraphInformed):
         if len(input_shape) >= 3:
             self.num_features = input_shape[2]
 
-        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N, K, F) TO SHAPE (NK, 1, F)
+        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N1, K, F) TO SHAPE (N1 K, 1, F)
         self.kernel = self.add_weight(name="kernel", shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
                                                             1, self.num_filters
                                                             ],
                                       initializer=self.kernel_initializer)
 
-        # BIAS OF SHAPE (1, Nout, F)
+        # BIAS OF SHAPE (1, N2, F)
         self.bias = self.add_weight(name="bias", shape=[1, self.adj_mat['shape'][1], self.num_filters], # <--------------------------- UNIQUE DIFFERENCE!
                                     initializer=self.bias_initializer)
 
@@ -291,24 +291,24 @@ class GraphInformed(DenseNonversatileGraphInformed):
         # CONVERSION OF A^ FROM SPARSE MATRIX TO TF-TENSOR
         adj_mat_hat_tf = self.adj_mat_tf
 
-        # CREATE A TF-TENSOR A~ OF SHAPE (NK, N), CONCATENATING K TIMES A^ ALONG ROW-AXIS
+        # CREATE A TF-TENSOR A~ OF SHAPE (N1 K, N2), CONCATENATING K TIMES A^ ALONG ROW-AXIS
         adj_mat_hat_tiled = tf.sparse.concat(axis=0, sp_inputs=([adj_mat_hat_tf] * self.num_features))
 
-        # RESHAPE INTPUT TENSOR, IF K > 1, FROM SHAPE (?, N, K) TO SHAPE (?, NK)
+        # RESHAPE INTPUT TENSOR, IF K > 1, FROM SHAPE (?, N1, K) TO SHAPE (?, N1 K)
         input_tot_tensor = input
         if len(input.shape) == 3:
             inputs_listed = [input[:, :, i] for i in range(self.num_features)]
             input_tot_tensor = tf.concat(inputs_listed, axis=1)
 
         # COMPUTE F W~^i MATRICES THAT, IF CONCATENATED ALONG axis2, ARE THE W~ TENSOR.
-        # WE OBTAIN EACH W~^i MATRIX (SPARSE) AS:
-        # 1. THE adj_mat_hat_tiled TENSOR OF SHAPE (NK, N)
-        # 2. THE f-TH TENSOR OF SHAPE (NK, 1), GIVEN BY self.kernel[:, :, f]
+        # WE OBTAIN EACH W~^i MATRIX (SPARSE) AS THE ELEMENT-WISE MULTIPLCATION OF:
+        # 1. THE adj_mat_hat_tiled TENSOR OF SHAPE (N1 K, N2)
+        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.kernel[:, :, f]
         #
         # THEN
         #
-        # SIMPLE MULTIPLICATION (?, NK) x (NK, N) OF INPUTS AND W~^i. THE CONCATENATION ALONG axis2 COINCIDES WITH
-        # THE OUTPUT TENSOR OF SHAPE (?, N, F)
+        # MATRIX-MULTIPLICATION (?, N1 K) x (N1 K, N2) OF INPUTS AND W~^i. THE CONCATENATION ALONG axis2 COINCIDES WITH
+        # THE OUTPUT TENSOR OF SHAPE (?, N2, F)
 
         out_tensor = []
         f = 0
