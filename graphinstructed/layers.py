@@ -1,13 +1,13 @@
 import tensorflow as tf
-from graphinformed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
+from graphinstructed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
 from scipy import sparse as spsparse
 from tensorflow.python.trackable.data_structures import NoDependency
 
 
-class DenseNonversatileGraphInformed(tf.keras.layers.Dense):
+class DenseNonversatileGraphInstructed(tf.keras.layers.Dense):
     """
-    General Graph-Informed layer class (obtained as subclass of tf.keras.layers.Dense), dense implementation.
-    It implements the Graph-Informed layer introduced in https://doi.org/10.3390/math10050786
+    General Graph-Instructed layer class (obtained as subclass of tf.keras.layers.Dense), dense implementation.
+    It implements the Graph-Instructed layer introduced in https://doi.org/10.3390/math10050786
     by Berrone S., Della Santa F., Mastropietro A., Pieraccini S., Vaccarino F..
     Given the adjacency matrix of shape (N, N) of a graph and the number of filters F (i.e., output features) the layer
     returns batch-array of shape (?, N, F), for each batch of inputs of shape (?, N, K), where K is the number of
@@ -150,11 +150,11 @@ class DenseNonversatileGraphInformed(tf.keras.layers.Dense):
         return out_tensor
 
 
-class GraphInformed(DenseNonversatileGraphInformed):
+class GraphInstructed(DenseNonversatileGraphInstructed):
     """
-    Graph-Informed layer class (obtained as subclass of DenseNonversatileGraphInformed),
+    Graph-Instructed layer class (obtained as subclass of DenseNonversatileGraphInstructed),
     sparse implementation.
-    It implements the Versatile General Graph-Informed (GI) layer, introduced in https://doi.org/10.48550/arXiv.2403.13781 by Della Santa F. as a further
+    It implements the Versatile General Graph-Instructed (GI) layer, introduced in https://doi.org/10.48550/arXiv.2403.13781 by Della Santa F. as a further
     generalization of General GI layers defined in https://doi.org/10.3390/math10050786 by Berrone S., Della Santa F.,
     Mastropietro A., Pieraccini S., Vaccarino F.
     Given the sub-matrix N1-by-N2 of an adjacency matrix of a graph and the number of filters F (i.e., output features),

@@ -1,20 +1,45 @@
-# GINN: Graph-Informed Neural Networks
+# GINN: Graph-Instructed Neural Networks
 
 by [Stefano Berrone](https://www.researchgate.net/profile/Stefano-Berrone), [Francesco Della Santa](https://www.researchgate.net/profile/Francesco-Della-Santa), [Antonio Mastropietro](https://www.researchgate.net/profile/Antonio-Mastropietro), [Sandra Pieraccini](https://www.researchgate.net/profile/Sandra-Pieraccini), [Francesco Vaccarino](https://www.researchgate.net/profile/Francesco-Vaccarino).
 
-![Example of the action of a GINN filter](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g001-550.jpg)
+![Example of the action of a GI layer](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g001-550.jpg)
 
-In this repository, we publish the codes necessary to implement the Graph-Informed Neural Networks (GINNs), presented 
+Fig. 1: Graph-Instructed (GI) layer action
+
+![Example of the action of a EWGI layer](./EWGIlayer.png)
+
+Fig. 2: Edge-Wise Graph-Instructed (EWGI) layer action
+
+In this repository, we publish the codes necessary to implement the Graph-Instructed Neural Networks (GINNs, formerly 
+called _Graph-Informed Neural Networks_), presented 
 for the first time in the paper: _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 
 2022, 10(5), 786; https://doi.org/10.3390/math10050786
 
-The papers related to GINNs are listed in the follwoing
+The papers related to GINNs are listed in the following
 1. _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 
 786; https://doi.org/10.3390/math10050786 **[OPEN ACCESS]**;
 1. _Graph-Informed Neural Networks for Sparse Grid-Based Discontinuity Detectors_, arXiv preprint, https://arxiv.org/abs/2401.13652
 1. _Sparse Implementation of Versatile Graph-Informed Layers_, arXiv preprint, http://arxiv.org/abs/2403.13781;
+1. _Edge-Wise Graph-Instructed Neural Networks_, (_under submission_)
 
-Graph-Informed (GI) layers are defined through a new spatial-based graph convolutional operation. The new architecture 
+The history of GINNs in brief:
+- **2019**: Idea, Development and first results on Discrete Fracture Network problems;
+- **Dec. 2019/Jan. 2020**: abstract subsmission of _Graph-Informed Neural Networks for Flux Regression in Discrete ;
+Fracture Networks_, for the [Computational Methods in Water Resources XXIII](https://cmwrconference.org/2020/) (CMWR),
+Stanford (US);
+- **Dec. 2020**: Presentation of _Graph-Informed Neural Networks for Flux Regression in Discrete 
+Fracture Networks_, at the [Computational Methods in Water Resources XXIII](https://cmwrconference.org/2020/) (CMWR), 
+remote, postponed w.r.t. June 2020 for COVID pandemic, [Young researcher presenter award 
+winner](https://cmwrconference.org/2020/award-winners/);
+- **Dec. 2021**: Presentation of _Predicting flux in Discrete Fracture Networks via Graph Informed Neural Networks_, 
+at the [Machine Learning and the Physical Sciences, 2021](https://ml4physicalsciences.github.io/2021/), NeurIPS 
+Foundation;
+- **March 2022**: First publication on journal, _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 
+786; https://doi.org/10.3390/math10050786
+- **2022 - Present**: See the list of papers above.
+  - **Sept. 2024**: Change of name into _Graph-Instructed Neural Networks_.
+
+Graph-Instructed (GI) layers are defined through a new spatial-based graph convolutional operation. The new architecture 
 is specifically designed for regression tasks on graph-structured data that are not suitable for the well-known graph 
 neural networks, such as the regression of functions with the domain and codomain defined on two sets of values for the 
 vertices of a graph. In particular, a GI layer exploits the adjacent matrix of a given graph to define the unit 
@@ -25,9 +50,14 @@ maximum-flow test problems of stochastic flow networks and on a real-world appli
 problem in underground networks of fractures. In more recent works, GINNs have been applied also to classification tasks 
 (e.g., detection of points near to discontinuity interfaces of functions, see https://arxiv.org/abs/2401.13652).
 
-**SPARSE AND DENSE OPERATIONS:** sparse implementation of GI layers has been introduced after http://arxiv.org/abs/2403.13781 (March 2024) and is 
-currently available! The dense implementation of the original GI layers' paper is still present in the repository, but
-it is deprecated.
+**SPARSE AND DENSE OPERATIONS:** sparse implementation of GI layers has been introduced after 
+http://arxiv.org/abs/2403.13781 (March 2024) and is currently available! The dense implementation of the original GI 
+layers' paper is still present in the repository, but it is deprecated.
+
+**NOVEL EDGE-WISE GI LAYERS:** Edge-wise layer implementation is now available, introduced after _Edge-Wise 
+Graph-Instructed Neural Networks_, (_under submission_, September 2024). The implementation of EWGI layer is based on 
+the old, dense, GI layer implementation (v1.0 of this repository). Sparse, versatile, implementation of EWGI layers will
+be available soon.
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
@@ -74,7 +104,7 @@ In this case, the layer is characterized by the connections between the chosen s
 nodes must be given during the initialization of the layer.
 
 ### Layer Initialization
-The _GraphInformed_ class, in [graphinformed.layers module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/layers.py) 
+The _GraphInformed_ class, in [graphinstructed.layers module](https://github.com/Fra0013To/GINN/blob/main/graphinstructed/layers.py) 
 of this repository, is defined as a subclass of [_tensorflow.keras.layers.Dense_](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense) (more precisily, it is a subclass
 of the deprecated non-sparse implementation of original GI layers, that is a subclass of Dense layers). Then, we list 
 and describe only the new input arguments for the initialization. All the other arguments 
@@ -94,7 +124,7 @@ describing the adjacency matrix using the following keys:
   in _rowkeys_custom_ and _colkeys_custom_. If _None_, we assume that this list is equal to the one stored in _keys_. 
 
   Such a kind of dictionary can be easily obtained from a sparse matrix using the _sparse2dict_ function defined in 
-the [graphinformed.utils module](https://github.com/Fra0013To/GINN/blob/main/graphinformed/utils.py) .
+the [graphinstructed.utils module](https://github.com/Fra0013To/GINN/blob/main/graphinstructed/utils.py) .
 - **rowkeys**: list, default _None_. List containing the indices of the nodes in _V1_. If _None_, we assume that the 
 indices are 0,... , (n1 - 1). Any list is automatically sorted in ascending order. This argument is ignored if the 
 _adj_mat_ argument is a dictionary.
@@ -186,5 +216,6 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > DO  - 
 
 ## Updates and Versions
+- v 3.0 (2024.09.12): Edge-Wise GI layer implementation (Dense, based on GI layer of v 1.0)
 - v 2.0 (2024.03.22): Sparse implementation and versatile general form of GI layers (see http://arxiv.org/abs/2403.13781).
 - v 1.0 (2022.02.28): Repository creation.

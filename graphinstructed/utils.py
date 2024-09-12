@@ -3,7 +3,7 @@ from scipy import sparse as spsparse
 
 def sparse2dict(X, k1=None, k2=None):
     """
-    Function that transforms a scipy.sparse matrix into a dictionary (used in Graph-Informed layers)
+    Function that transforms a scipy.sparse matrix into a dictionary (used in Graph-Instructed layers)
     :param X: scipy.sparse matrix
     :param k1, k2: list of indexes identifying submatrix (custom order!)
     :return: dictionary characterizing (a sub-matrix of) an adjacency matrix described by X, k1, and k2.

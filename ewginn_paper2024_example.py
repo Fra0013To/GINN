@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from graphinstructed.layers import GraphInstructed
-from graphinstructed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
+from graphinstructed.layers_ewginn_paper2024 import OldDenseGraphInstructed, EdgeWiseGraphInstructed, sparse2dict
 from scipy import sparse as spsparse
 
 random_seed = 42
@@ -21,8 +20,7 @@ A[[i for i in range(N)], [i for i in range(N)]] = 0
 
 # Convert the matrix A into a sparse matrix and then into a dictionary
 Asparse = spsparse.dok_matrix(A)
-# CONVERSION INTO A DICTIONARY (Necessary for dense, old, implementation)
-# Adict = sparse2dict(Asparse)
+Adict = sparse2dict(Asparse)
 
 
 # -------- GINN creation -----------
@@ -32,31 +30,31 @@ print('@@@@@@@@@@ START OF GINN MODEL CREATION @@@@@@@@')
 # Number of filters
 F = 10
 
-# V2 nodes (target)
-V2_list = [1, 3]
-subAsparse = spsparse.dok_matrix(A[:, V2_list])
-# CONVERSION INTO A DICTIONARY (not necessary)
-# subAdict = sparse2dict(subAsparse, k2=V2_list)
+# Highlighted nodes (mask operation)
+hn_list = [1, 3]
 
 # Creation of a fake training
 X = np.random.rand(T, N)
-Y = np.random.rand(T, len(V2_list))
+Y = np.random.rand(T, len(hn_list))
 
 I = tf.keras.layers.Input(N)
-G1 = GraphInstructed(adj_mat=Asparse,
-                     num_filters=F
-                     )(I)
-G2 = GraphInstructed(adj_mat=Asparse,
-                     num_filters=F
-                     )(G1)
-G3 = GraphInstructed(adj_mat=subAsparse,
-                     colkeys=V2_list,
-                     activation='linear',
-                     num_filters=F,
-                     pool='reduce_max'
-                     )(G2)
+G1 = OldDenseGraphInstructed(adj_mat=Adict,
+                             num_filters=F
+                             )(I)
+G2 = EdgeWiseGraphInstructed(adj_mat=Adict,
+                             num_filters=F
+                             )(G1)
+G3 = EdgeWiseGraphInstructed(adj_mat=Adict,
+                             num_filters=F
+                             )(G2)
+Gout = OldDenseGraphInstructed(adj_mat=Adict,
+                               activation='linear',
+                               num_filters=F,
+                               highlighted_nodes=hn_list,
+                               pool='reduce_max'
+                               )(G3)
 
-model = tf.keras.models.Model(inputs=I, outputs=G3)
+model = tf.keras.models.Model(inputs=I, outputs=Gout)
 
 model.compile(loss='mse',
               optimizer='adam',
@@ -82,7 +80,6 @@ print('@@@@@@@@@@ GINN TRAINING COMPLETED @@@@@@@@')
 
 print('@@@@@@@@@@ EXAMPLE OF GINN PREDICITONS @@@@@@@@')
 print(model.predict(X[:T // 5, :]))
-
 
 
 
