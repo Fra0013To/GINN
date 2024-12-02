@@ -333,6 +333,124 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
         return out_tensor
 
 
+class EdgeWiseGraphInstructed(GraphInstructed):
+    """
+    Graph-Instructed layer class (obtained as subclass of tf.keras.layers.Dense).
+    It implements the Edge-Wise Graph-Instructed layer introduced in https://arxiv.org/pdf/2409.08023
+    by Della Santa F., Mastropietro A., Pieraccini S., Vaccarino F..
+    Given the sub-matrix N1-by-N2 of an adjacency matrix of a graph and the number of filters F (i.e., output features),
+    the layer returns batch-array of shape (?, N2, F), for each batch of inputs of shape (?, N1, K), where K is the
+    number of input features per graph node. The symbol "?" denotes the batch size.
+    If num_filters=1 or option pool is not None, the output tensor has shape (?, N2). A general pooling operation that
+    returns F' output features, 1 < F' < F, is not implemented yet.
+    This layer can receive any batch-of-inputs tensor of shape (?, N1, K).
+    """
+
+    def get_config(self):
+
+        config = super().get_config()
+
+        config['adj_mat_original'] = self.adj_mat_original
+        config['selfloop_value'] = self.selfloop_value
+
+        return config
+
+    def build(self, input_shape):
+
+        self.num_features = 1
+        if len(input_shape) >= 3:
+            self.num_features = input_shape[2]
+
+        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W1 FROM SHAPE (N1, K, F) TO SHAPE (N1 K, 1, F)
+        self.kernel_straight = self.add_weight(name="kernel_straight",
+                                               shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
+                                                      1, self.num_filters],
+                                               initializer=self.kernel_initializer
+                                               )
+        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (K, N2, F)
+        self.kernel_rev = self.add_weight(name="kernel_rev",
+                                          shape=[self.num_features, self.adj_mat_original['shape'][1],
+                                                 self.num_filters],
+                                          initializer=self.kernel_initializer
+                                          )
+
+        # BIAS OF SHAPE (1, N2, F)
+        self.bias = self.add_weight(name="bias", shape=[1, self.adj_mat['shape'][1], self.num_filters],
+                                    initializer=self.bias_initializer)
+
+        # print(self.adj_mat)
+        adj_mat_hat = dict2sparse(self.adj_mat)  # <--------------------- MATRIX A^ WITH SELF-LOOPS
+        adj_mat_hat = adj_mat_hat.todok()
+        # CONVERSION OF A^ FROM SPARSE MATRIX TO TF-TENSOR
+        adj_mat_hat_tf = tf.sparse.SparseTensor(list(adj_mat_hat.keys()),
+                                                tf.cast(list(adj_mat_hat.values()), dtype=self.dtype),
+                                                adj_mat_hat.shape
+                                                )
+
+        self.adj_mat_tf = adj_mat_hat_tf
+
+    def call(self, input):
+
+        self.num_features = 1
+        if len(input.shape) == 3:
+            self.num_features = input.shape[2]
+
+        # CONVERSION OF A^ FROM SPARSE MATRIX TO TF-TENSOR
+        adj_mat_hat_tf = self.adj_mat_tf
+
+        # RESHAPE INTPUT TENSOR, IF K > 1, FROM SHAPE (?, N1, K) TO SHAPE (?, N1 K)
+        input_tot_tensor = input
+        if len(input.shape) == 3:
+            inputs_listed = [input[:, :, i] for i in range(self.num_features)]
+            input_tot_tensor = tf.concat(inputs_listed, axis=1)
+
+        # COMPUTE F W~^i MATRICES THAT, IF CONCATENATED ALONG axis2, ARE THE W~ TENSOR.
+        # WE OBTAIN EACH W~^i MATRIX (SPARSE) AS THE ELEMENT-WISE MULTIPLCATION OF:
+        # 1. THE adj_mat_hat_tiled_f TENSOR OF SHAPE (N1 K, N2) OBTAINED BY CONCATENATING ALONG axis0 THE K
+        # TENSORS OF SHAPE (N1, N2) OBTAINED BY MULTUPLYING:
+        #   a. adj_mat_hat_tf
+        #   b. THE k-TH TENSOR OF SHAPE (1, N2), GIVEN BY self.kernel_rev[k:k+1, :, f]
+        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.kernel_straight[:, :, f]
+        #
+        # THEN
+        #
+        # MATRIX-MULTIPLICATION (?, N1 K) x (N1 K, N2) OF INPUTS AND W~^i. THE CONCATENATION ALONG axis2 COINCIDES WITH
+        # THE OUTPUT TENSOR OF SHAPE (?, N2, F)
+
+        out_tensor = []
+        f = 0
+        while f < self.num_filters:
+            # NEW
+            # CREATE A TF-TENSOR A~ OF SHAPE (N1 K, N2), CONCATENATING K TIMES A^ ALONG ROW-AXIS, AFTER MULTIPLYING IT
+            # COLUMN-WISE W.R.T. self.kernel_rev[k, :, f], FOR EACH k=0, ..., K-1
+            adj_mat_hat_tiled_f = []
+            k = 0
+            while k < self.num_features:
+                adj_mat_hat_tiled_f.append(adj_mat_hat_tf.__mul__(self.kernel_rev[k:k+1, :, f]))
+                k += 1
+
+            adj_mat_hat_tiled_f = tf.sparse.concat(axis=0, sp_inputs=adj_mat_hat_tiled_f)
+
+            Wtilde_f = adj_mat_hat_tiled_f.__mul__(self.kernel_straight[:, :, f])
+            out_tensor.append(
+                tf.expand_dims(tf.sparse.sparse_dense_matmul(input_tot_tensor, Wtilde_f), axis=2)
+            )
+            f += 1
+
+        out_tensor = tf.concat(out_tensor, axis=2)
+
+        # ADD THE BIAS TO EACH ONE OF THE ? ELEMENTS OF THE FIRST DIMENSION; THEN, APPLY THE ACTIVATION FUNCTION
+        out_tensor = self.activation(out_tensor + self.bias)
+
+        # SQUEEZE IF F=1 OR APPLY THE POOLING OPERATION (IF pool IS NOT None)
+        if out_tensor.shape[-1] == 1:
+            out_tensor = tf.squeeze(out_tensor, axis=2)
+        elif self.pool is not None:
+            out_tensor = self.pool(out_tensor, axis=2)
+
+        return out_tensor
+
+
 
 
 

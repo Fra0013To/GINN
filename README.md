@@ -56,8 +56,7 @@ layers' paper is still present in the repository, but it is deprecated.
 
 **NOVEL EDGE-WISE GI LAYERS:** Edge-wise layer implementation is now available, introduced after _Edge-Wise 
 Graph-Instructed Neural Networks_, (_under submission_, September 2024). The implementation of EWGI layer is based on 
-the old, dense, GI layer implementation (v1.0 of this repository). Sparse, versatile, implementation of EWGI layers will
-be available soon.
+the new, sparse, GI layer implementation (v2.0 of this repository). 
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
 
@@ -75,6 +74,9 @@ _GINN_ is released under the MIT License (refer to the [LICENSE file](https://gi
 
 ## Requirements
 - Numpy 1.25.2
+- Pandas 2.2.3
+- PyYAML 6.0.2
+- Scikit-Learn 1.5.2
 - Scipy 1.12.0
 - TensorFlow 2.15.0.post1
 
@@ -155,6 +157,9 @@ To run the example (bash terminal):
     or 
     ```bash
     pip install numpy==1.25.2
+    pip pandas==2.2.3
+    pip PyYAML==6.0.2
+    pip scikit_learn==1.5.2
     pip install scipy==1.12.0
     pip install tensorflow==2.15.0.post1
     ```
@@ -185,8 +190,22 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 >       eprint={2403.13781},  
 >       archivePrefix={arXiv},  
 >       primaryClass={cs.LG},  
->       doi={}  
+>       url={https://arxiv.org/abs/2403.13781},  
+>       doi={10.48550/arXiv.2403.13781}  
 > }
+> 
+> @misc{dellasanta2024ewginn,  
+>       title={Edge-Wise Graph-Instructed Neural Networks},   
+>       author={{Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
+>       year={2024},  
+>       eprint={2409.08023},  
+>       archivePrefix={arXiv},  
+>       primaryClass={cs.LG},  
+>       url={https://arxiv.org/abs/2409.08023},  
+>       doi={10.48550/arXiv.2409.08023}  
+> }
+> 
+
 
 #### RIS
 > TY  - EJOU  
@@ -215,7 +234,20 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > KW  - deep learning  
 > DO  - 
 
+> TY  - EJOU  
+> AU  - Della Santa, Francesco  
+> AU  - Mastropietro, Antonio  
+> AU  - Pieraccini, Sandra  
+> AU  - Vaccarino, Francesco  
+> TI  - Edge-Wise Graph-Instructed Neural Networks   
+> T2  - arXiv  
+> PY  - 2024   
+> KW  - graph neural networks  
+> KW  - deep learning  
+> DO  - 
+
 ## Updates and Versions
+- v 3.1 (2024.12.02): Edge-Wise GI layer implementation (Sparse, based on GI layer of v 2.0)
 - v 3.0 (2024.09.12): Edge-Wise GI layer implementation (Dense, based on GI layer of v 1.0)
 - v 2.0 (2024.03.22): Sparse implementation and versatile general form of GI layers (see http://arxiv.org/abs/2403.13781).
 - v 1.0 (2022.02.28): Repository creation.

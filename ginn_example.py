@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from graphinstructed.layers import GraphInstructed
+from graphinstructed.layers import GraphInstructed, EdgeWiseGraphInstructed
 from graphinstructed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
 from scipy import sparse as spsparse
 
@@ -46,9 +46,9 @@ I = tf.keras.layers.Input(N)
 G1 = GraphInstructed(adj_mat=Asparse,
                      num_filters=F
                      )(I)
-G2 = GraphInstructed(adj_mat=Asparse,
-                     num_filters=F
-                     )(G1)
+G2 = EdgeWiseGraphInstructed(adj_mat=Asparse,
+                             num_filters=F
+                             )(G1)
 G3 = GraphInstructed(adj_mat=subAsparse,
                      colkeys=V2_list,
                      activation='linear',
