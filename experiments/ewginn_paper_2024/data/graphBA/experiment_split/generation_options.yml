@@ -1,0 +1,4 @@
+random_seed: 1400
+test_cardinality: 3000
+training_cardinality: 400
+validation_cardinality: 100
