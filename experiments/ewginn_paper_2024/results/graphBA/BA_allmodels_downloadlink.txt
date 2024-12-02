@@ -1,0 +1,5 @@
+EWGINN models:
+https://www.dropbox.com/scl/fi/b0o4gmpqkut3um0i3s35w/graphBA_EWGI.tar?rlkey=4sfv4893htd7zo7r7td2ugazs&st=8hwbjjzj&dl=0
+
+GINN models:
+https://www.dropbox.com/scl/fi/5qpafgoh165rxuwnh859y/graphBA_GI.tar?rlkey=4rqu7d65coim2ehjh2hkt98hn&st=6we1sabh&dl=0
