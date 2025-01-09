@@ -16,11 +16,12 @@ for the first time in the paper: _Graph-Informed Neural Networks for Regressions
 2022, 10(5), 786; https://doi.org/10.3390/math10050786
 
 The papers related to GINNs are listed in the following
-1. _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 10(5), 
+1. _Graph-Informed Neural Networks for Regressions on Graph-Structured Data_, Mathematics 2022, 
 786; https://doi.org/10.3390/math10050786 **[OPEN ACCESS]**;
 1. _Graph-Informed Neural Networks for Sparse Grid-Based Discontinuity Detectors_, arXiv preprint, https://arxiv.org/abs/2401.13652
 1. _Sparse Implementation of Versatile Graph-Informed Layers_, arXiv preprint, http://arxiv.org/abs/2403.13781;
-1. _Edge-Wise Graph-Instructed Neural Networks_, (_under submission_)
+1. _Edge-Wise Graph-Instructed Neural Networks_, Journal of Computational Science 2025; https://doi.org/10.1016/j.jocs.2024.102518 **[OPEN ACCESS]**
+
 
 The history of GINNs in brief:
 - **2019**: Idea, Development and first results on Discrete Fracture Network problems;
@@ -55,7 +56,7 @@ http://arxiv.org/abs/2403.13781 (March 2024) and is currently available! The den
 layers' paper is still present in the repository, but it is deprecated.
 
 **NOVEL EDGE-WISE GI LAYERS:** Edge-wise layer implementation is now available, introduced after _Edge-Wise 
-Graph-Instructed Neural Networks_, (_under submission_, September 2024). The implementation of EWGI layer is based on 
+Graph-Instructed Neural Networks_ (Journal of Computational Science, 2025). The implementation of EWGI layer is based on 
 the new, sparse, GI layer implementation (v2.0 of this repository). 
 
 ![Example of GINN](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g005-550.jpg)
@@ -172,8 +173,8 @@ To run the example (bash terminal):
 If you find GINNs useful in your research, please cite the following papers (BibTeX and RIS versions):
 #### BibTeX
 > @Article{math10050786,  
-> AUTHOR = {Berrone, Stefano and {Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
 > TITLE = {Graph-Informed Neural Networks for Regressions on Graph-Structured Data},  
+> AUTHOR = {Berrone, Stefano and {Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},
 > JOURNAL = {Mathematics},  
 > VOLUME = {10},  
 > YEAR = {2022},  
@@ -182,7 +183,7 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > ISSN = {2227-7390},  
 > DOI = {10.3390/math10050786}   
 > }
->   
+   
 > @misc{dellasanta2024sparse,  
 >       title={Sparse Implementation of Versatile Graph-Informed Layers},   
 >       author={{Della Santa}, Francesco},  
@@ -191,31 +192,32 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 >       archivePrefix={arXiv},  
 >       primaryClass={cs.LG},  
 >       url={https://arxiv.org/abs/2403.13781},  
->       doi={10.48550/arXiv.2403.13781}  
+>       doi={https://doi.org/10.48550/arXiv.2403.13781}  
 > }
-> 
-> @misc{dellasanta2024ewginn,  
->       title={Edge-Wise Graph-Instructed Neural Networks},   
->       author={{Della Santa}, Francesco and Mastropietro, Antonio and Pieraccini, Sandra and Vaccarino, Francesco},  
->       year={2024},  
->       eprint={2409.08023},  
->       archivePrefix={arXiv},  
->       primaryClass={cs.LG},  
->       url={https://arxiv.org/abs/2409.08023},  
->       doi={10.48550/arXiv.2409.08023}  
+
+> @article{DELLASANTA2025ewginn,  
+> title = {Edge-Wise Graph-Instructed Neural Networks},  
+> journal = {Journal of Computational Science},  
+> volume = {85},  
+> pages = {102518},  
+> year = {2025},  
+> issn = {1877-7503},  
+> doi = {https://doi.org/10.1016/j.jocs.2024.102518},  
+> url = {https://www.sciencedirect.com/science/article/pii/S1877750324003119},
+> author = {Francesco {Della Santa} and Antonio Mastropietro and Sandra Pieraccini and Francesco Vaccarino},  
+> keywords = {Graph neural networks, Deep learning, Regression on graphs},  
 > }
-> 
 
 
 #### RIS
 > TY  - EJOU  
+> TI  - Graph-Informed Neural Networks for Regressions on Graph-Structured Data  
+> JO  - Mathematics  
 > AU  - Berrone, Stefano  
 > AU  - Della Santa, Francesco  
 > AU  - Mastropietro, Antonio  
 > AU  - Pieraccini, Sandra  
 > AU  - Vaccarino, Francesco  
-> TI  - Graph-Informed Neural Networks for Regressions on Graph-Structured Data  
-> T2  - Mathematics  
 > PY  - 2022  
 > VL  - 10  
 > IS  - 5  
@@ -226,28 +228,35 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > DO  - 10.3390/math10050786 
 
 > TY  - EJOU  
-> AU  - Della Santa, Francesco  
 > TI  - Sparse Implementation of Versatile Graph-Informed Layers   
 > T2  - arXiv  
+> AU  - Della Santa, Francesco  
 > PY  - 2024   
 > KW  - graph neural networks  
 > KW  - deep learning  
-> DO  - 
+> DO  - https://doi.org/10.48550/arXiv.2403.13781
 
-> TY  - EJOU  
+> TY  - JOUR  
+> T1  - Edge-Wise Graph-Instructed Neural Networks  
 > AU  - Della Santa, Francesco  
 > AU  - Mastropietro, Antonio  
 > AU  - Pieraccini, Sandra  
 > AU  - Vaccarino, Francesco  
-> TI  - Edge-Wise Graph-Instructed Neural Networks   
-> T2  - arXiv  
-> PY  - 2024   
-> KW  - graph neural networks  
-> KW  - deep learning  
-> DO  - 
+> JO  - Journal of Computational Science  
+> VL  - 85  
+> SP  - 102518  
+> PY  - 2025  
+> DA  - 2025/02/01/  
+> SN  - 1877-7503  
+> DO  - https://doi.org/10.1016/j.jocs.2024.102518  
+> UR  - https://www.sciencedirect.com/science/article/pii/S1877750324003119  
+> KW  - Graph neural networks  
+> KW  - Deep learning  
+> KW  - Regression on graphs  
+> ER  -   
 
 ## Updates and Versions
-- v 3.1 (2024.12.02): Edge-Wise GI layer implementation (Sparse, based on GI layer of v 2.0)
+- v 3.1 (2024.12.02): Edge-Wise GI layer implementation (Sparse, based on GI layer of v 2.0, see https://doi.org/10.1016/j.jocs.2024.102518  )
 - v 3.0 (2024.09.12): Edge-Wise GI layer implementation (Dense, based on GI layer of v 1.0)
 - v 2.0 (2024.03.22): Sparse implementation and versatile general form of GI layers (see http://arxiv.org/abs/2403.13781).
 - v 1.0 (2022.02.28): Repository creation.
