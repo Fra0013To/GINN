@@ -367,14 +367,6 @@ class EdgeWiseGraphInstructed(GraphInstructed):
                                                       1, self.num_filters],
                                                initializer=self.kernel_initializer
                                                )
-        # OLD
-        # # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (K, N2, F)
-        # self.kernel_rev = self.add_weight(name="kernel_rev",
-        #                                   shape=[self.num_features, self.adj_mat_original['shape'][1],
-        #                                          self.num_filters],
-        #                                   initializer=self.kernel_initializer
-        #                                   )
-        # NEW
         # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (1, N2, K, F)
         self.kernel_rev = self.add_weight(name="kernel_rev",
                                           shape=[1, self.adj_mat_original['shape'][1],
@@ -425,39 +417,40 @@ class EdgeWiseGraphInstructed(GraphInstructed):
         # MATRIX-MULTIPLICATION (?, N1 K) x (N1 K, N2) OF INPUTS AND W~^i. THE CONCATENATION ALONG axis2 COINCIDES WITH
         # THE OUTPUT TENSOR OF SHAPE (?, N2, F)
 
+        adj_mat_hat_tiled_f = []
+        k = 0
+        while k < self.num_features:
+            adj_mat_hat_tiled_f.append(adj_mat_hat_tf)
+            k += 1
+        # SPARSE TENSOR OF SHAPE (N1 K, N2)
+        adj_mat_hat_tiled_f = tf.sparse.concat(axis=0, sp_inputs=adj_mat_hat_tiled_f)
+
         out_tensor = []
         f = 0
         while f < self.num_filters:
             # NEW
             # CREATE A TF-TENSOR A~ OF SHAPE (N1 K, N2), CONCATENATING K TIMES A^ ALONG ROW-AXIS, AFTER MULTIPLYING IT
             # COLUMN-WISE W.R.T. self.kernel_rev[k, :, f], FOR EACH k=0, ..., K-1
-            adj_mat_hat_tiled_f = []
-            k = 0
-            while k < self.num_features:
-                # OLD
-                # adj_mat_hat_tiled_f.append(adj_mat_hat_tf.__mul__(self.kernel_rev[k:k+1, :, f]))
-                # NEW
-                adj_mat_hat_tiled_f.append(adj_mat_hat_tf)
-                k += 1
 
-            adj_mat_hat_tiled_f = tf.sparse.concat(axis=0, sp_inputs=adj_mat_hat_tiled_f)
-
-            # NEW OPS
             # --------------
-            adj_mat_hat_tiled_f = tf.sparse.reshape(adj_mat_hat_tiled_f,
-                                                    (self.adj_mat_original['shape'][0],
-                                                     self.adj_mat_original['shape'][1],
-                                                     self.num_features)
-                                                    )
-            Wtilde_fk = adj_mat_hat_tiled_f.__mul__(self.kernel_rev[:, :, :, f])
-            adj_mat_hat_tiled_f_ = tf.sparse.reshape(Wtilde_fk,
-                                                     (self.adj_mat_original['shape'][0] * self.num_features,
-                                                      self.adj_mat_original['shape'][1]
+            # RESHAPE INTO A SPARSE TENSOR OF SHAPE (N1, N2, K)
+            adj_mat_hat_tiled_f_ = tf.sparse.reshape(adj_mat_hat_tiled_f,
+                                                     (self.adj_mat_original['shape'][0],
+                                                      self.adj_mat_original['shape'][1],
+                                                      self.num_features)
+                                                     )
+            # ELEMENT-WISE MUTLIPLICATION WITH kernel_rev (f-TH FILTER)
+            Wtilde_fk = adj_mat_hat_tiled_f_.__mul__(self.kernel_rev[:, :, :, f])
+            # --------------
+            # RESHAPE INTO A SPARSE TENSOR OF SHAPE (N1 K, N2)
+            adj_mat_hat_tiled_f__ = tf.sparse.reshape(Wtilde_fk,
+                                                      (self.adj_mat_original['shape'][0] * self.num_features,
+                                                       self.adj_mat_original['shape'][1]
+                                                       )
                                                       )
-                                                    )
-            # --------------
-
-            Wtilde_f = adj_mat_hat_tiled_f_.__mul__(self.kernel_straight[:, :, f])
+            # ELEMENT-WISE MUTLIPLICATION WITH kernel_straight (f-TH FILTER)
+            Wtilde_f = adj_mat_hat_tiled_f__.__mul__(self.kernel_straight[:, :, f])
+            # ----------------
             out_tensor.append(
                 tf.expand_dims(tf.sparse.sparse_dense_matmul(input_tot_tensor, Wtilde_f), axis=2)
             )
