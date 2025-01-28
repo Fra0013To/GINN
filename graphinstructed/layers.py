@@ -367,10 +367,18 @@ class EdgeWiseGraphInstructed(GraphInstructed):
                                                       1, self.num_filters],
                                                initializer=self.kernel_initializer
                                                )
-        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (K, N2, F)
+        # OLD
+        # # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (K, N2, F)
+        # self.kernel_rev = self.add_weight(name="kernel_rev",
+        #                                   shape=[self.num_features, self.adj_mat_original['shape'][1],
+        #                                          self.num_filters],
+        #                                   initializer=self.kernel_initializer
+        #                                   )
+        # NEW
+        # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (1, N2, K, F)
         self.kernel_rev = self.add_weight(name="kernel_rev",
-                                          shape=[self.num_features, self.adj_mat_original['shape'][1],
-                                                 self.num_filters],
+                                          shape=[1, self.adj_mat_original['shape'][1],
+                                                 self.num_features, self.num_filters],
                                           initializer=self.kernel_initializer
                                           )
 
@@ -426,12 +434,30 @@ class EdgeWiseGraphInstructed(GraphInstructed):
             adj_mat_hat_tiled_f = []
             k = 0
             while k < self.num_features:
-                adj_mat_hat_tiled_f.append(adj_mat_hat_tf.__mul__(self.kernel_rev[k:k+1, :, f]))
+                # OLD
+                # adj_mat_hat_tiled_f.append(adj_mat_hat_tf.__mul__(self.kernel_rev[k:k+1, :, f]))
+                # NEW
+                adj_mat_hat_tiled_f.append(adj_mat_hat_tf)
                 k += 1
 
             adj_mat_hat_tiled_f = tf.sparse.concat(axis=0, sp_inputs=adj_mat_hat_tiled_f)
 
-            Wtilde_f = adj_mat_hat_tiled_f.__mul__(self.kernel_straight[:, :, f])
+            # NEW OPS
+            # --------------
+            adj_mat_hat_tiled_f = tf.sparse.reshape(adj_mat_hat_tiled_f,
+                                                    (self.adj_mat_original['shape'][0],
+                                                     self.adj_mat_original['shape'][1],
+                                                     self.num_features)
+                                                    )
+            Wtilde_fk = adj_mat_hat_tiled_f.__mul__(self.kernel_rev[:, :, :, f])
+            adj_mat_hat_tiled_f_ = tf.sparse.reshape(Wtilde_fk,
+                                                     (self.adj_mat_original['shape'][0] * self.num_features,
+                                                      self.adj_mat_original['shape'][1]
+                                                      )
+                                                    )
+            # --------------
+
+            Wtilde_f = adj_mat_hat_tiled_f_.__mul__(self.kernel_straight[:, :, f])
             out_tensor.append(
                 tf.expand_dims(tf.sparse.sparse_dense_matmul(input_tot_tensor, Wtilde_f), axis=2)
             )
