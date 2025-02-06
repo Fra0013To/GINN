@@ -25,8 +25,7 @@ The papers related to GINNs are listed in the following
 
 The history of GINNs in brief:
 - **2019**: Idea, Development and first results on Discrete Fracture Network problems;
-- **Dec. 2019/Jan. 2020**: abstract subsmission of _Graph-Informed Neural Networks for Flux Regression in Discrete ;
-Fracture Networks_, for the [Computational Methods in Water Resources XXIII](https://cmwrconference.org/2020/) (CMWR),
+- **Dec. 2019/Jan. 2020**: abstract subsmission of _Graph-Informed Neural Networks for Flux Regression in Discrete Fracture Networks_, for the [Computational Methods in Water Resources XXIII](https://cmwrconference.org/2020/) (CMWR),
 Stanford (US);
 - **Dec. 2020**: Presentation of _Graph-Informed Neural Networks for Flux Regression in Discrete 
 Fracture Networks_, at the [Computational Methods in Water Resources XXIII](https://cmwrconference.org/2020/) (CMWR), 
