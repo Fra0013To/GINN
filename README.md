@@ -2,6 +2,9 @@
 
 by [Stefano Berrone](https://www.researchgate.net/profile/Stefano-Berrone), [Francesco Della Santa](https://www.researchgate.net/profile/Francesco-Della-Santa), [Antonio Mastropietro](https://www.researchgate.net/profile/Antonio-Mastropietro), [Sandra Pieraccini](https://www.researchgate.net/profile/Sandra-Pieraccini), [Francesco Vaccarino](https://www.researchgate.net/profile/Francesco-Vaccarino).
 
+### N.B.: this is a "dev branch" containing the first implementation of EWGINNs. For an up-to-date code, go to the [main branch](https://github.com/Fra0013To/GINN) of this repository
+
+
 ![Example of the action of a GI layer](https://www.mdpi.com/mathematics/mathematics-10-00786/article_deploy/html/images/mathematics-10-00786-g001-550.jpg)
 
 Fig. 1: Graph-Instructed (GI) layer action
