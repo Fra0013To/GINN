@@ -190,8 +190,8 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 >       eprint={2403.13781},  
 >       archivePrefix={arXiv},  
 >       primaryClass={cs.LG},  
->       url={https://arxiv.org/abs/2403.13781},  
->       doi={https://doi.org/10.48550/arXiv.2403.13781}  
+>       url={https://arxiv.org/abs/2403.13781 },  
+>       doi={10.48550/arXiv.2403.13781}  
 > }
 
 > @article{DELLASANTA2025ewginn,  
@@ -201,8 +201,8 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > pages = {102518},  
 > year = {2025},  
 > issn = {1877-7503},  
-> doi = {https://doi.org/10.1016/j.jocs.2024.102518},  
-> url = {https://www.sciencedirect.com/science/article/pii/S1877750324003119},
+> doi = {10.1016/j.jocs.2024.102518},  
+> url = {https://www.sciencedirect.com/science/article/pii/S1877750324003119 },
 > author = {Francesco {Della Santa} and Antonio Mastropietro and Sandra Pieraccini and Francesco Vaccarino},  
 > keywords = {Graph neural networks, Deep learning, Regression on graphs},  
 > }
