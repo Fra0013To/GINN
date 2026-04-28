@@ -1,12 +1,11 @@
 """
-ATTENTION: THIS CODE HAS BEEN UPDATED TO (AND FIXED FOR) KERAS 3!
-    OLDER VERSIONS OF THE GINNs CODE, SUITABLE FOR KERAS 2, ARE AVAILABLE IN VERSIONS <= 3.1
-    OR IN THE "graphinstructed_keras2" folder
+ATTENTION: THIS CODE IS SUITABLE FOR KERAS 2 ONLY AND IT REFERS TO VERSION 3.1 OF THE REPOSITORY (SEE THE README FILE)
 """
 import tensorflow as tf
-from .utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
+from graphinstructed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
 from scipy import sparse as spsparse
 from tensorflow.python.trackable.data_structures import NoDependency
+
 
 class DenseNonversatileGraphInstructed(tf.keras.layers.Dense):
     """
@@ -104,25 +103,19 @@ class DenseNonversatileGraphInstructed(tf.keras.layers.Dense):
             self.num_features = input_shape[2]
 
         # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N, K, F) TO SHAPE (NK, 1, F)
-        self.gi_kernel = self.add_weight(name="gi_kernel",
-                                         shape=[int(self.units * self.num_features), 1, self.num_filters],
-                                         initializer=self.kernel_initializer)
+        self.kernel = self.add_weight(name="kernel", shape=[int(self.units * self.num_features), 1, self.num_filters],
+                                      initializer=self.kernel_initializer)
 
         # BIAS OF SHAPE (1, N, F)
-        self.gi_bias = self.add_weight(name="gi_bias",
-                                       shape=[1, self.units, self.num_filters],
-                                       initializer=self.bias_initializer)
-
-    def compute_output_shape(self, input_shape):
-        batch_dim = input_shape[0]
-        output_nodes = self.units
-
-        if self.num_filters == 1 or self.pool is not None:
-            return tf.TensorShape([batch_dim, output_nodes])
-
-        return tf.TensorShape([batch_dim, output_nodes, self.num_filters])
+        self.bias = self.add_weight(name="bias", shape=[1, self.units, self.num_filters],
+                                    initializer=self.bias_initializer)
 
     def call(self, input):
+
+        self.num_features = 1
+        if len(input.shape) == 3:
+            self.num_features = input.shape[2]
+
         adj_mat_loaded = dict2sparse(self.adj_mat)
         adj_mat_hat = adj_mat_loaded + spsparse.identity(self.units)
 
@@ -136,8 +129,8 @@ class DenseNonversatileGraphInstructed(tf.keras.layers.Dense):
 
         # COMPUTE THE W~ TENSOR MULTIPLYING ELEMENT-WISE:
         # 1. A TF-TENSOR OF SHAPE (NK, N, F), OBTAINED CONCATENATING F TIMES THE TENSOR A~ ALONG THE 3rd AXIS
-        # 2. THE self.gi_kernel TENSOR OF SHAPE (NK, 1, F)
-        Wtilde = tf.tile(adj_mat_hat_tiled_expanded, [1, 1, self.num_filters]) * self.gi_kernel
+        # 2. THE self.kernel TENSOR OF SHAPE (NK, 1, F)
+        Wtilde = tf.tile(adj_mat_hat_tiled_expanded, [1, 1, self.num_filters]) * self.kernel
 
         # RESHAPE INTPUT TENSOR, IF K > 1, FROM SHAPE (?, N, K) TO SHAPE (?, NK)
         input_tot_tensor = input
@@ -149,7 +142,7 @@ class DenseNonversatileGraphInstructed(tf.keras.layers.Dense):
         out_tensor = tf.tensordot(input_tot_tensor, Wtilde, [[1], [0]])
 
         # ADD THE BIASS TO EACH ONE OF THE ? ELEMENTS OF THE FIRST DIMENSION; THEN, APPLY THE ACTIVATION FUNCTION
-        out_tensor = self.activation(out_tensor + self.gi_bias)
+        out_tensor = self.activation(out_tensor + self.bias)
 
         # SQUEEZE IF F=1 OR APPLY THE POOLING OPERATION (IF pool IS NOT None)
         if out_tensor.shape[-1] == 1:
@@ -260,10 +253,7 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
 
         config = super().get_config()
 
-        # Serialize the constructor-facing adjacency matrix, not the internally
-        # expanded A^ matrix, so Keras can rebuild the layer without extra kwargs
-        # or duplicating self-loops on reload.
-        config['adj_mat'] = self.adj_mat_original
+        config['adj_mat_original'] = self.adj_mat_original
         config['selfloop_value'] = self.selfloop_value
 
         return config
@@ -275,16 +265,14 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
             self.num_features = input_shape[2]
 
         # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W FROM SHAPE (N1, K, F) TO SHAPE (N1 K, 1, F)
-        self.gi_kernel = self.add_weight(name="gi_kernel",
-                                         shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
-                                                1, self.num_filters
-                                                ],
-                                         initializer=self.kernel_initializer)
+        self.kernel = self.add_weight(name="kernel", shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
+                                                            1, self.num_filters
+                                                            ],
+                                      initializer=self.kernel_initializer)
 
         # BIAS OF SHAPE (1, N2, F)
-        self.gi_bias = self.add_weight(name="gi_bias",
-                                       shape=[1, self.adj_mat['shape'][1], self.num_filters], # <--------------------------- UNIQUE DIFFERENCE!
-                                       initializer=self.bias_initializer)
+        self.bias = self.add_weight(name="bias", shape=[1, self.adj_mat['shape'][1], self.num_filters], # <--------------------------- UNIQUE DIFFERENCE!
+                                    initializer=self.bias_initializer)
 
         # print(self.adj_mat)
         adj_mat_hat = dict2sparse(self.adj_mat)  # <--------------------- MATRIX A^ WITH SELF-LOOPS
@@ -297,16 +285,12 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
 
         self.adj_mat_tf = adj_mat_hat_tf
 
-    def compute_output_shape(self, input_shape):
-        batch_dim = input_shape[0]
-        output_nodes = self.adj_mat['shape'][1]
-
-        if self.num_filters == 1 or self.pool is not None:
-            return tf.TensorShape([batch_dim, output_nodes])
-
-        return tf.TensorShape([batch_dim, output_nodes, self.num_filters])
-
     def call(self, input):
+
+        self.num_features = 1
+        if len(input.shape) == 3:
+            self.num_features = input.shape[2]
+
         # CONVERSION OF A^ FROM SPARSE MATRIX TO TF-TENSOR
         adj_mat_hat_tf = self.adj_mat_tf
 
@@ -322,7 +306,7 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
         # COMPUTE F W~^i MATRICES THAT, IF CONCATENATED ALONG axis2, ARE THE W~ TENSOR.
         # WE OBTAIN EACH W~^i MATRIX (SPARSE) AS THE ELEMENT-WISE MULTIPLCATION OF:
         # 1. THE adj_mat_hat_tiled TENSOR OF SHAPE (N1 K, N2)
-        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.gi_kernel[:, :, f]
+        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.kernel[:, :, f]
         #
         # THEN
         #
@@ -332,7 +316,7 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
         out_tensor = []
         f = 0
         while f < self.num_filters:
-            Wtilde_f = adj_mat_hat_tiled.__mul__(self.gi_kernel[:, :, f])
+            Wtilde_f = adj_mat_hat_tiled.__mul__(self.kernel[:, :, f])
             out_tensor.append(
                 tf.expand_dims(tf.sparse.sparse_dense_matmul(input_tot_tensor, Wtilde_f), axis=2)
             )
@@ -341,7 +325,7 @@ class GraphInstructed(DenseNonversatileGraphInstructed):
         out_tensor = tf.concat(out_tensor, axis=2)
 
         # ADD THE BIAS TO EACH ONE OF THE ? ELEMENTS OF THE FIRST DIMENSION; THEN, APPLY THE ACTIVATION FUNCTION
-        out_tensor = self.activation(out_tensor + self.gi_bias)
+        out_tensor = self.activation(out_tensor + self.bias)
 
         # SQUEEZE IF F=1 OR APPLY THE POOLING OPERATION (IF pool IS NOT None)
         if out_tensor.shape[-1] == 1:
@@ -365,6 +349,15 @@ class EdgeWiseGraphInstructed(GraphInstructed):
     This layer can receive any batch-of-inputs tensor of shape (?, N1, K).
     """
 
+    def get_config(self):
+
+        config = super().get_config()
+
+        config['adj_mat_original'] = self.adj_mat_original
+        config['selfloop_value'] = self.selfloop_value
+
+        return config
+
     def build(self, input_shape):
 
         self.num_features = 1
@@ -372,22 +365,21 @@ class EdgeWiseGraphInstructed(GraphInstructed):
             self.num_features = input_shape[2]
 
         # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W1 FROM SHAPE (N1, K, F) TO SHAPE (N1 K, 1, F)
-        self.gi_kernel_straight = self.add_weight(name="gi_kernel_straight",
-                                                  shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
+        self.kernel_straight = self.add_weight(name="kernel_straight",
+                                               shape=[int(self.adj_mat_original['shape'][0] * self.num_features),
                                                       1, self.num_filters],
-                                                  initializer=self.kernel_initializer
-                                                  )
+                                               initializer=self.kernel_initializer
+                                               )
         # FOR PRACTICAL USAGE IN THE CALL METHOD, WE RESHAPE THE FILTER W2 FROM SHAPE (N2, K, F) TO SHAPE (1, N2, K, F)
-        self.gi_kernel_rev = self.add_weight(name="gi_kernel_rev",
-                                             shape=[1, self.adj_mat_original['shape'][1],
+        self.kernel_rev = self.add_weight(name="kernel_rev",
+                                          shape=[1, self.adj_mat_original['shape'][1],
                                                  self.num_features, self.num_filters],
-                                             initializer=self.kernel_initializer
-                                             )
+                                          initializer=self.kernel_initializer
+                                          )
 
         # BIAS OF SHAPE (1, N2, F)
-        self.gi_bias = self.add_weight(name="gi_bias",
-                                       shape=[1, self.adj_mat['shape'][1], self.num_filters],
-                                       initializer=self.bias_initializer)
+        self.bias = self.add_weight(name="bias", shape=[1, self.adj_mat['shape'][1], self.num_filters],
+                                    initializer=self.bias_initializer)
 
         # print(self.adj_mat)
         adj_mat_hat = dict2sparse(self.adj_mat)  # <--------------------- MATRIX A^ WITH SELF-LOOPS
@@ -401,6 +393,11 @@ class EdgeWiseGraphInstructed(GraphInstructed):
         self.adj_mat_tf = adj_mat_hat_tf
 
     def call(self, input):
+
+        self.num_features = 1
+        if len(input.shape) == 3:
+            self.num_features = input.shape[2]
+
         # CONVERSION OF A^ FROM SPARSE MATRIX TO TF-TENSOR
         adj_mat_hat_tf = self.adj_mat_tf
 
@@ -415,8 +412,8 @@ class EdgeWiseGraphInstructed(GraphInstructed):
         # 1. THE adj_mat_hat_tiled_f TENSOR OF SHAPE (N1 K, N2) OBTAINED BY CONCATENATING ALONG axis0 THE K
         # TENSORS OF SHAPE (N1, N2) OBTAINED BY MULTUPLYING:
         #   a. adj_mat_hat_tf
-        #   b. THE k-TH TENSOR OF SHAPE (1, N2), GIVEN BY self.gi_kernel_rev[k:k+1, :, f]
-        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.gi_kernel_straight[:, :, f]
+        #   b. THE k-TH TENSOR OF SHAPE (1, N2), GIVEN BY self.kernel_rev[k:k+1, :, f]
+        # 2. THE f-TH TENSOR OF SHAPE (N1 K, 1), GIVEN BY self.kernel_straight[:, :, f]
         #
         # THEN
         #
@@ -436,7 +433,7 @@ class EdgeWiseGraphInstructed(GraphInstructed):
         while f < self.num_filters:
             # NEW
             # CREATE A TF-TENSOR A~ OF SHAPE (N1 K, N2), CONCATENATING K TIMES A^ ALONG ROW-AXIS, AFTER MULTIPLYING IT
-            # COLUMN-WISE W.R.T. self.gi_kernel_rev[k, :, f], FOR EACH k=0, ..., K-1
+            # COLUMN-WISE W.R.T. self.kernel_rev[k, :, f], FOR EACH k=0, ..., K-1
 
             # --------------
             # RESHAPE INTO A SPARSE TENSOR OF SHAPE (N1, N2, K)
@@ -445,8 +442,8 @@ class EdgeWiseGraphInstructed(GraphInstructed):
                                                       self.adj_mat_original['shape'][1],
                                                       self.num_features)
                                                      )
-            # ELEMENT-WISE MUTLIPLICATION WITH gi_kernel_rev (f-TH FILTER)
-            Wtilde_fk = adj_mat_hat_tiled_f_.__mul__(self.gi_kernel_rev[:, :, :, f])
+            # ELEMENT-WISE MUTLIPLICATION WITH kernel_rev (f-TH FILTER)
+            Wtilde_fk = adj_mat_hat_tiled_f_.__mul__(self.kernel_rev[:, :, :, f])
             # --------------
             # RESHAPE INTO A SPARSE TENSOR OF SHAPE (N1 K, N2)
             adj_mat_hat_tiled_f__ = tf.sparse.reshape(Wtilde_fk,
@@ -454,8 +451,8 @@ class EdgeWiseGraphInstructed(GraphInstructed):
                                                        self.adj_mat_original['shape'][1]
                                                        )
                                                       )
-            # ELEMENT-WISE MUTLIPLICATION WITH gi_kernel_straight (f-TH FILTER)
-            Wtilde_f = adj_mat_hat_tiled_f__.__mul__(self.gi_kernel_straight[:, :, f])
+            # ELEMENT-WISE MUTLIPLICATION WITH kernel_straight (f-TH FILTER)
+            Wtilde_f = adj_mat_hat_tiled_f__.__mul__(self.kernel_straight[:, :, f])
             # ----------------
             out_tensor.append(
                 tf.expand_dims(tf.sparse.sparse_dense_matmul(input_tot_tensor, Wtilde_f), axis=2)
@@ -465,7 +462,7 @@ class EdgeWiseGraphInstructed(GraphInstructed):
         out_tensor = tf.concat(out_tensor, axis=2)
 
         # ADD THE BIAS TO EACH ONE OF THE ? ELEMENTS OF THE FIRST DIMENSION; THEN, APPLY THE ACTIVATION FUNCTION
-        out_tensor = self.activation(out_tensor + self.gi_bias)
+        out_tensor = self.activation(out_tensor + self.bias)
 
         # SQUEEZE IF F=1 OR APPLY THE POOLING OPERATION (IF pool IS NOT None)
         if out_tensor.shape[-1] == 1:

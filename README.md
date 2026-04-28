@@ -72,7 +72,7 @@ the new, sparse, GI layer implementation (v2.0 of this repository).
 ## License
 _GINN_ is released under the MIT License (refer to the [LICENSE file](https://github.com/Fra0013To/GINN/blob/main/LICENSE) for details).
 
-## Requirements
+## Requirements (version <= 3.1 - Keras 2)
 - Numpy 1.25.2
 - Pandas 2.2.3
 - PyYAML 6.0.2
@@ -80,10 +80,20 @@ _GINN_ is released under the MIT License (refer to the [LICENSE file](https://gi
 - Scipy 1.12.0
 - TensorFlow 2.15.0.post1
 
-**N.B.:** The [requirements.txt file](https://github.com/Fra0013To/GINN/blob/main/requirements.txt) contains the required python modules (list above).
+## Requirements (version >= 3.2 - Keras 3)
+- **Python 3.11**
+- Matplotlib 3.10.7
+- Numpy 2.3.5
+- Pandas 2.3.3
+- PyYAML 6.0.3
+- Scikit-Learn 1.7.2
+- Scipy 1.16.3
+- TensorFlow 2.20.0 (with or without CUDA)
+
+**N.B.:** The [requirements_gpu.txt](https://github.com/Fra0013To/GINN/blob/main/requirements_gpu.txt) and [requirements_gpu.txt](https://github.com/Fra0013To/GINN/blob/main/requirements_cpu.txt) files contain the required python modules (listed above) plus some additional and useful modules.
 
 ## Getting Started
-The GI layer can be used in Keras model as any other Keras layer. 
+The GI layer can be used in Keras models as any other Keras layer. 
 
 In the following, we describe the inputs and outputs 
 of a GI layer and we list the arguments for a GI layer initialization. Similar information is contained in the class 
@@ -255,6 +265,7 @@ If you find GINNs useful in your research, please cite the following papers (Bib
 > ER  -   
 
 ## Updates and Versions
+- v 3.2 (2026.04.28): Repository update to Keras 3 (i.e., TensorFlow >= 2.16)
 - v 3.1 (2024.12.02): Edge-Wise GI layer implementation (Sparse, based on GI layer of v 2.0, see https://doi.org/10.1016/j.jocs.2024.102518  )
 - v 3.0 (2024.09.12): Edge-Wise GI layer implementation (Dense, based on GI layer of v 1.0)
 - v 2.0 (2024.03.22): Sparse implementation and versatile general form of GI layers (see http://arxiv.org/abs/2403.13781).

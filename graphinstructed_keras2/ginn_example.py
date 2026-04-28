@@ -42,7 +42,7 @@ subAsparse = spsparse.dok_matrix(A[:, V2_list])
 X = np.random.rand(T, N)
 Y = np.random.rand(T, len(V2_list))
 
-I = tf.keras.layers.Input((N, ))
+I = tf.keras.layers.Input(N)
 G1 = GraphInstructed(adj_mat=Asparse,
                      num_filters=F
                      )(I)
@@ -60,8 +60,7 @@ model = tf.keras.models.Model(inputs=I, outputs=G3)
 
 model.compile(loss='mse',
               optimizer='adam',
-              metrics=['mae'],
-              jit_compile=False
+              metrics=['mae']
               )
 
 print('@@@@@@@@@@ GINN MODEL CREATION COMPLETED @@@@@@@@')
