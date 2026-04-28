@@ -4,7 +4,7 @@ ATTENTION: THIS CODE HAS BEEN UPDATED TO (AND FIXED FOR) KERAS 3!
     OR IN THE "graphinstructed_keras2" folder
 """
 import tensorflow as tf
-from .utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
+from graphinstructed.utils import sparse2dict, dict2sparse, add_rowcolkeys_selfloops
 from scipy import sparse as spsparse
 from tensorflow.python.trackable.data_structures import NoDependency
 
